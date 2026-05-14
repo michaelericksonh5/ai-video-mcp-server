@@ -1,11 +1,11 @@
 {
-  "name": "veo-video-mcp-server",
+  "name": "ai-video-mcp-server",
   "version": "1.0.0",
-  "description": "MCP server for AI video generation — Veo 3.1 (fal.ai + Gemini), Happy Horse, and Seedance 2.0",
+  "description": "AI video generation for Claude \u2014 Veo 3.1 (fal.ai + Gemini), Happy Horse (Alibaba), and Seedance 2.0 (ByteDance). Text-to-video, image-to-video, first+last frame, reference images, video extension.",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "veo-video-mcp-server": "./dist/index.js"
+    "ai-video-mcp-server": "./dist/index.js"
   },
   "scripts": {
     "start": "node dist/index.js",

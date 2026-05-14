@@ -22,8 +22,8 @@ import { registerVeoTools } from "./tools/veoTools.js";
 import { registerAlternativeTools } from "./tools/alternativeTools.js";
 
 const server = new McpServer({
-  name: "veo-video-mcp-server",
-  version: "1.0.0",
+  name: "ai-video-mcp-server",
+  version: "1.1.0",
 });
 
 // Register all tool groups
@@ -35,4 +35,4 @@ registerAlternativeTools(server);
 // Start stdio transport
 const transport = new StdioServerTransport();
 await server.connect(transport);
-process.stderr.write("Veo Video MCP Server running (stdio)\n");
+process.stderr.write("AI Video MCP Server running (stdio)\n");

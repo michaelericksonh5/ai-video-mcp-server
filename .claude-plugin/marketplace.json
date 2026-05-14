@@ -3,11 +3,19 @@
   "owner": "michaelericksonh5",
   "plugins": [
     {
-      "name": "veo-video-generator",
-      "description": "AI video generation — Veo 3.1, Happy Horse, Seedance 2.0. Works with fal.ai and Google Gemini API keys.",
+      "name": "ai-video-generator",
+      "description": "AI video generation for Claude \u2014 Veo 3.1 (fal.ai + Gemini), Happy Horse, and Seedance 2.0. Text-to-video, image-to-video, first+last frame, reference images, video extension.",
       "source": "https://github.com/michaelericksonh5/veo-video-mcp-server",
       "version": "1.0.0",
-      "tags": ["video", "ai", "veo", "fal-ai", "gemini", "happy-horse", "seedance"]
+      "tags": [
+        "video",
+        "ai",
+        "veo",
+        "fal-ai",
+        "gemini",
+        "happy-horse",
+        "seedance"
+      ]
     }
   ]
 }

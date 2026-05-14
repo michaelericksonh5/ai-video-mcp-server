@@ -1,16 +1,16 @@
 {
-  "name": "veo-video-generator",
+  "name": "ai-video-generator",
   "version": "1.0.0",
-  "description": "AI video generation for Claude — Veo 3.1 (fal.ai + Gemini), Happy Horse (Alibaba), and Seedance 2.0 (ByteDance). Text-to-video, image-to-video, first+last frame, reference images, and video extension. Supports both fal.ai and Google Gemini API keys.",
+  "description": "AI video generation for Claude \u2014 Veo 3.1 (fal.ai + Gemini), Happy Horse (Alibaba), and Seedance 2.0 (ByteDance). Text-to-video, image-to-video, first+last frame, reference images, video extension. Supports fal.ai and Google Gemini API keys.",
   "author": "michaelericksonh5",
   "homepage": "https://github.com/michaelericksonh5/veo-video-mcp-server",
   "license": "MIT",
   "skills": [
-    "skills/veo-video-generator"
+    "skills/ai-video-generator"
   ],
   "mcpServers": {
-    "veo-video": {
-      "description": "Veo 3.1, Happy Horse, and Seedance 2.0 video generation via fal.ai and Gemini",
+    "ai-video": {
+      "description": "AI video generation via Veo 3.1, Happy Horse, and Seedance 2.0 (fal.ai + Gemini)",
       "config": ".claude-plugin/mcp.json"
     }
   }
