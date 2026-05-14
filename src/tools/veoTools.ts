@@ -97,7 +97,7 @@ Returns: Video URL, provider, model, and metadata.`,
           });
         }
 
-        return { content: [{ type: "text" as const, text: await formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result, params.prompt) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -172,7 +172,7 @@ Returns: Video URL and metadata.`,
           });
         }
 
-        return { content: [{ type: "text" as const, text: await formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result, params.prompt) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -250,7 +250,7 @@ Returns: Video URL and metadata.`,
           });
         }
 
-        return { content: [{ type: "text" as const, text: await formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result, params.prompt) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -321,7 +321,7 @@ Returns: Video URL and metadata.`,
           });
         }
 
-        return { content: [{ type: "text" as const, text: await formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result, params.prompt) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -396,7 +396,7 @@ Returns: Extended video URL and metadata.`,
           });
         }
 
-        return { content: [{ type: "text" as const, text: await formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result, params.prompt) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }

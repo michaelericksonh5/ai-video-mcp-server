@@ -56,7 +56,7 @@ Returns: Animated video URL and metadata.`,
         const { key } = resolveProvider("fal");
         configureFal(key);
         const result = await falHappyHorseImageToVideo(params);
-        return { content: [{ type: "text" as const, text: await formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result, params.prompt) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -113,7 +113,7 @@ Returns: Video URL and metadata.`,
         const { key } = resolveProvider("fal");
         configureFal(key);
         const result = await falHappyHorseReferenceToVideo(params);
-        return { content: [{ type: "text" as const, text: await formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result, params.prompt) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -169,7 +169,7 @@ Returns: Video URL and metadata.`,
         const { key } = resolveProvider("fal");
         configureFal(key);
         const result = await falSeedanceImageToVideo(params);
-        return { content: [{ type: "text" as const, text: await formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result, params.prompt) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -245,7 +245,7 @@ Returns: Video URL and metadata.`,
         const { key } = resolveProvider("fal");
         configureFal(key);
         const result = await falSeedanceReferenceToVideo(params);
-        return { content: [{ type: "text" as const, text: await formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result, params.prompt) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }

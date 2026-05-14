@@ -115,17 +115,29 @@ async function downloadVideo(url: string, destPath: string, provider: string): P
   fs.writeFileSync(destPath, Buffer.from(buffer));
 }
 
-async function rewrapToMov(result: VideoGenerationResult): Promise<string | null> {
+function slugifyPrompt(prompt: string | undefined): string | null {
+  if (!prompt) return null;
+  const slug = prompt
+    .trim()
+    .slice(0, 50)
+    .replace(/[^a-z0-9]+/gi, "_")
+    .replace(/_+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 40);
+  return slug || null;
+}
+
+async function rewrapToMov(result: VideoGenerationResult, prompt?: string): Promise<string | null> {
   const ffmpegBin = await ensureFfmpegStatic();
   if (!ffmpegBin) return null;
 
   const outDir = path.join(os.homedir(), ".h5g-ai-video", "output");
   fs.mkdirSync(outDir, { recursive: true });
 
-  const safeName = (result.model ?? "video").replace(/[^a-z0-9_-]/gi, "_").slice(0, 40);
+  const slug = slugifyPrompt(prompt) ?? (result.model ?? "video").replace(/[^a-z0-9_-]/gi, "_").slice(0, 40);
   const ts = Date.now();
-  const mp4Path = path.join(outDir, `${safeName}_${ts}_tmp.mp4`);
-  const movPath = path.join(outDir, `${safeName}_${ts}.mov`);
+  const mp4Path = path.join(outDir, `${slug}_${ts}_tmp.mp4`);
+  const movPath = path.join(outDir, `${slug}_${ts}.mov`);
 
   try {
     await downloadVideo(result.video.url, mp4Path, result.provider);
@@ -145,12 +157,12 @@ async function rewrapToMov(result: VideoGenerationResult): Promise<string | null
   }
 }
 
-export async function formatResult(result: VideoGenerationResult): Promise<string> {
+export async function formatResult(result: VideoGenerationResult, prompt?: string): Promise<string> {
   let movPath: string | null = null;
   let movNote = "";
 
   try {
-    movPath = await rewrapToMov(result);
+    movPath = await rewrapToMov(result, prompt);
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     movNote = ` (MOV conversion failed: ${msg})`;
@@ -164,7 +176,7 @@ export async function formatResult(result: VideoGenerationResult): Promise<strin
   ];
 
   if (movPath) {
-    lines.push(`**Local MOV**: ${movPath}`);
+    lines.push(`**Saved to**: ${movPath}`);
   } else {
     lines.push(`**Video URL**: ${result.video.url}${movNote}`);
   }
@@ -180,7 +192,7 @@ export async function formatResult(result: VideoGenerationResult): Promise<strin
 
   lines.push(``);
   if (movPath) {
-    lines.push(`Open: ${movPath}`);
+    lines.push(`Video saved to: ${movPath}`);
     lines.push(`Source URL: ${result.video.url}`);
   } else {
     lines.push(`Download or open: ${result.video.url}`);
