@@ -1,7 +1,7 @@
 {
   "name": "ai-video-mcp-server",
   "version": "1.0.0",
-  "description": "AI video generation for Claude \u2014 Veo 3.1 (fal.ai + Gemini), Happy Horse (Alibaba), and Seedance 2.0 (ByteDance). Text-to-video, image-to-video, first+last frame, reference images, video extension.",
+  "description": "AI video generation for Claude — Veo 3.1 (fal.ai + Gemini), Happy Horse (Alibaba), and Seedance 2.0 (ByteDance). Text-to-video, image-to-video, first+last frame, reference images, video extension.",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.19.19",
+    "esbuild": "^0.28.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   }
