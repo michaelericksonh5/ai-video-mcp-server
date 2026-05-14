@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "veo-video": {
+      "command": "node",
+      "args": ["${pluginDir}/dist/index.js"],
+      "env": {
+        "FAL_KEY": "${FAL_KEY:-}",
+        "GEMINI_API_KEY": "${GEMINI_API_KEY:-}"
+      }
+    }
+  }
+}
