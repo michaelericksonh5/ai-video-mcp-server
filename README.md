@@ -1,4 +1,4 @@
-# Veo Video Generator — Claude Plugin
+# AI Video Generator — Claude Plugin
 
 AI video generation for Claude using **Veo 3.1**, **Happy Horse**, and **Seedance 2.0**.
 
@@ -7,7 +7,7 @@ Works with **fal.ai** API keys and **Google Gemini** API keys.
 ---
 
 ## What it can do
-
+h
 | Capability | fal.ai | Gemini |
 |---|---|---|
 | Text → Video (Veo 3.1) | ✅ | ✅ |
