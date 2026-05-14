@@ -4,27 +4,30 @@
     "name": "michaelericksonh5",
     "email": "michael.erickson@high5games.com"
   },
-  "description": "High 5 Games Claude Code plugins \u2014 AI video generation, slot machine art creation, and skill auditing.",
+  "description": "High 5 Games Claude Code plugins — AI video generation, slot machine art creation, and skill auditing.",
   "plugins": [
     {
       "name": "ai-video-generator",
-      "description": "AI video generation for Claude \u2014 Veo 3.1 (fal.ai + Gemini), Happy Horse (Alibaba), and Seedance 2.0 (ByteDance). Text-to-video, image-to-video, first+last frame, reference images, video extension.",
-      "source": ".",
-      "version": "1.0.0",
+      "description": "AI video generation for Claude — Veo 3.1 (fal.ai + Gemini), Happy Horse (Alibaba), and Seedance 2.0 (ByteDance). Text-to-video, image-to-video, first+last frame, reference images, video extension.",
+      "source": "./",
       "tags": ["video", "ai", "veo", "fal-ai", "gemini", "happy-horse", "seedance"]
     },
     {
       "name": "slot-art-creator-node",
-      "description": "Generate, QA, and resize mobile slot machine art \u2014 symbols, UI, backgrounds, key art. Numbered workflow (slot-00 through slot-10), persistent project memory, Gemini + fal.ai dual backend.",
-      "source": "https://github.com/michaelericksonh5/slot-art-creator-node",
-      "version": "1.1.0",
+      "description": "Generate, QA, and resize mobile slot machine art — symbols, UI, backgrounds, key art. Numbered workflow (slot-00 through slot-10), persistent project memory, Gemini + fal.ai dual backend.",
+      "source": {
+        "source": "github",
+        "repo": "michaelericksonh5/slot-art-creator-node"
+      },
       "tags": ["slot", "art", "casino", "design", "image-generation"]
     },
     {
       "name": "skill-auditor",
       "description": "Audits a Claude Code skill against an 8-dimension quality rubric. READY / NEEDS WORK / DRAFT verdict with actionable findings.",
-      "source": "https://github.com/michaelericksonh5/skill-auditor",
-      "version": "1.0.0",
+      "source": {
+        "source": "github",
+        "repo": "michaelericksonh5/skill-auditor"
+      },
       "tags": ["skills", "audit", "quality", "claude-code"]
     }
   ]
