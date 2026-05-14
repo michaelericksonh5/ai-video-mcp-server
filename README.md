@@ -27,60 +27,37 @@ Works with **fal.ai** API keys and **Google Gemini** API keys.
 
 ---
 
-## Install as a Claude Plugin
+## Install via the H5G Marketplace
 
-```bash
-/plugin install https://github.com/michaelericksonh5/veo-video-mcp-server
+The easiest way to install this plugin — along with the slot art creator and skill auditor — is through the shared High 5 Games marketplace:
+
 ```
-
-Then configure your API key (see below).
+/plugin marketplace add https://github.com/michaelericksonh5/claude-plugins
+/plugin install ai-video-generator@h5g-plugins
+```
 
 ---
 
-## Manual Setup
+## Set up your API keys
 
-### 1. Clone and build
+After installing, run the setup script once from a terminal in the plugin directory:
 
+**Windows (PowerShell):**
+```powershell
+.\setup-key.ps1
+```
+
+**Mac / Linux:**
 ```bash
-git clone https://github.com/michaelericksonh5/veo-video-mcp-server
-cd veo-video-mcp-server
-npm install
-npm run build
+./setup-key.sh
 ```
 
-### 2. Configure your API key (safely)
+The script writes your keys to `~/.claude/settings.json` under the `"env"` key — the official Claude Code mechanism for plugin keys. Keys written there are automatically shared across every plugin in the H5G marketplace. If you already set `FAL_KEY` or `GEMINI_API_KEY` through the slot art creator setup, you're already done.
 
-**Option A — fal.ai key** (supports all models):
-```bash
-# Get your key at https://fal.ai/dashboard/keys
-export FAL_KEY="your-key-here"
-```
+**fal.ai key:** https://fal.ai/dashboard/keys — supports all models (Veo 3.1, Happy Horse, Seedance 2.0)  
+**Gemini key:** https://aistudio.google.com/app/apikey — Veo 3.1 only; requires the paid Gemini API tier
 
-**Option B — Google Gemini key** (Veo 3.1 only, paid tier required):
-```bash
-# Get your key at https://aistudio.google.com/app/apikey
-export GEMINI_API_KEY="your-key-here"
-```
-
-> **Security:** Never paste your key into Claude's chat. Always set it as an environment variable or in the Claude Desktop config's `env` block.
-
-### 3. Add to Claude Desktop config
-
-Edit `~/.claude/claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "veo-video": {
-      "command": "node",
-      "args": ["/absolute/path/to/veo-video-mcp-server/dist/index.js"],
-      "env": {
-        "FAL_KEY": "your-fal-key-here"
-      }
-    }
-  }
-}
-```
+> **Security:** Never paste your API key into Claude's chat. The setup script uses hidden input so your key is never visible on screen.
 
 ---
 
@@ -88,7 +65,7 @@ Edit `~/.claude/claude_desktop_config.json`:
 
 Just talk to Claude naturally:
 
-- *"Make a 8-second cinematic video of a wolf running through a snowy forest"*
+- *"Make an 8-second cinematic video of a wolf running through a snowy forest"*
 - *"Animate this photo"* (drop an image)
 - *"Generate a video that starts with [image1] and ends with [image2]"*
 - *"Extend this video: [URL]"*
