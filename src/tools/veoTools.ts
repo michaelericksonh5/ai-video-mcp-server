@@ -9,6 +9,7 @@ import { z } from "zod";
 import { resolveProvider } from "../services/keyManager.js";
 import { configureFal, falTextToVideo, falExtendVideo, falFirstLastFrameToVideo, falImageToVideo, falReferenceToVideo } from "../services/falClient.js";
 import { geminiTextToVideo, geminiExtendVideo, geminiFirstLastFrameToVideo, geminiImageToVideo, geminiReferenceToVideo } from "../services/geminiClient.js";
+import { formatResult } from "../services/movConverter.js";
 import type { VideoGenerationResult } from "../types.js";
 
 // ─── Shared provider schema ──────────────────────────────────────────────────
@@ -25,24 +26,6 @@ const safetySchema = z
   .describe(
     "Safety tolerance (fal.ai only): 1=most strict, 6=most permissive. Default 4. Not sent to Gemini."
   );
-
-function formatResult(result: VideoGenerationResult): string {
-  const lines = [
-    `✅ Video generated successfully!`,
-    ``,
-    `**Provider**: ${result.provider === "fal" ? "fal.ai" : "Google Gemini"}`,
-    `**Model**: ${result.model}`,
-    `**Video URL**: ${result.video.url}`,
-  ];
-  if (result.video.file_size) lines.push(`**File size**: ${(result.video.file_size / 1024 / 1024).toFixed(1)} MB`);
-  if (result.video.width && result.video.height) lines.push(`**Resolution**: ${result.video.width}×${result.video.height}`);
-  if (result.video.duration) lines.push(`**Duration**: ${result.video.duration}s`);
-  if (result.video.fps) lines.push(`**FPS**: ${result.video.fps}`);
-  if (result.seed !== undefined) lines.push(`**Seed**: ${result.seed}`);
-  if (result.request_id) lines.push(`**Request ID**: ${result.request_id}`);
-  lines.push(``, `Download or open: ${result.video.url}`);
-  return lines.join("\n");
-}
 
 export function registerVeoTools(server: McpServer): void {
 
@@ -114,7 +97,7 @@ Returns: Video URL, provider, model, and metadata.`,
           });
         }
 
-        return { content: [{ type: "text" as const, text: formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -189,7 +172,7 @@ Returns: Video URL and metadata.`,
           });
         }
 
-        return { content: [{ type: "text" as const, text: formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -267,7 +250,7 @@ Returns: Video URL and metadata.`,
           });
         }
 
-        return { content: [{ type: "text" as const, text: formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -338,7 +321,7 @@ Returns: Video URL and metadata.`,
           });
         }
 
-        return { content: [{ type: "text" as const, text: formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -413,7 +396,7 @@ Returns: Extended video URL and metadata.`,
           });
         }
 
-        return { content: [{ type: "text" as const, text: formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }

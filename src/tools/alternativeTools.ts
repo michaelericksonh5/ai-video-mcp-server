@@ -13,25 +13,7 @@ import {
   falSeedanceImageToVideo,
   falSeedanceReferenceToVideo,
 } from "../services/falClient.js";
-import type { VideoGenerationResult } from "../types.js";
-
-function formatResult(result: VideoGenerationResult): string {
-  const lines = [
-    `✅ Video generated successfully!`,
-    ``,
-    `**Provider**: fal.ai`,
-    `**Model**: ${result.model}`,
-    `**Video URL**: ${result.video.url}`,
-  ];
-  if (result.video.file_size) lines.push(`**File size**: ${(result.video.file_size / 1024 / 1024).toFixed(1)} MB`);
-  if (result.video.width && result.video.height) lines.push(`**Resolution**: ${result.video.width}×${result.video.height}`);
-  if (result.video.duration) lines.push(`**Duration**: ${result.video.duration}s`);
-  if (result.video.fps) lines.push(`**FPS**: ${result.video.fps}`);
-  if (result.seed !== undefined) lines.push(`**Seed**: ${result.seed}`);
-  if (result.request_id) lines.push(`**Request ID**: ${result.request_id}`);
-  lines.push(``, `Download or open: ${result.video.url}`);
-  return lines.join("\n");
-}
+import { formatResult } from "../services/movConverter.js";
 
 export function registerAlternativeTools(server: McpServer): void {
 
@@ -74,7 +56,7 @@ Returns: Animated video URL and metadata.`,
         const { key } = resolveProvider("fal");
         configureFal(key);
         const result = await falHappyHorseImageToVideo(params);
-        return { content: [{ type: "text" as const, text: formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -131,7 +113,7 @@ Returns: Video URL and metadata.`,
         const { key } = resolveProvider("fal");
         configureFal(key);
         const result = await falHappyHorseReferenceToVideo(params);
-        return { content: [{ type: "text" as const, text: formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -187,7 +169,7 @@ Returns: Video URL and metadata.`,
         const { key } = resolveProvider("fal");
         configureFal(key);
         const result = await falSeedanceImageToVideo(params);
-        return { content: [{ type: "text" as const, text: formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -263,7 +245,7 @@ Returns: Video URL and metadata.`,
         const { key } = resolveProvider("fal");
         configureFal(key);
         const result = await falSeedanceReferenceToVideo(params);
-        return { content: [{ type: "text" as const, text: formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
