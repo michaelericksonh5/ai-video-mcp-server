@@ -5,12 +5,26 @@
 
 import type { ApiKeyStatus, ApiProvider } from "../types.js";
 
+/**
+ * Guard against placeholder values injected by Claude Code when a key is not configured.
+ * Claude Code may inject empty strings ("") or unresolved template strings ("${FAL_KEY}")
+ * instead of leaving the variable undefined. Any value that fails this test is treated
+ * as not configured.
+ */
+function looksLikeRealKey(value: string | undefined): boolean {
+  if (!value) return false;
+  if (/^\$\{[A-Z_]+\}$/.test(value)) return false;
+  if (value.length < 20) return false;
+  return true;
+}
+
 export function getFalKey(): string | undefined {
-  return process.env.FAL_KEY;
+  return looksLikeRealKey(process.env.FAL_KEY) ? process.env.FAL_KEY : undefined;
 }
 
 export function getGeminiKey(): string | undefined {
-  return process.env.GEMINI_API_KEY;
+  const k = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+  return looksLikeRealKey(k) ? k : undefined;
 }
 
 export function getApiKeyStatus(): ApiKeyStatus {
