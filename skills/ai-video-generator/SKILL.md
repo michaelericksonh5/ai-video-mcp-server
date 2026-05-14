@@ -50,6 +50,30 @@ If `active_provider === "none"`:
 - Ask: "Do you have a fal.ai key or a Google Gemini key?" then call `veo_setup_api_key` with the chosen provider and show the instructions
 - Do not attempt generation
 
+
+## Setup Scripts (Fastest Key Configuration)
+
+Two scripts ship with the plugin for secure, no-paste key setup. Point users to these when they have no key configured.
+
+**Windows (PowerShell):**
+```powershell
+cd "C:\Users\[you]\Documents\Claude_Plugins\ai-video-mcp-server"
+.\setup-key.ps1              # fal.ai key (default)
+.\setup-key.ps1 -Provider gemini  # Gemini key
+.\setup-key.ps1 -Provider both    # Both keys
+```
+
+**Mac/Linux (Terminal):**
+```bash
+cd ~/Documents/Claude_Plugins/ai-video-mcp-server
+bash setup-key.sh fal     # fal.ai key
+bash setup-key.sh gemini  # Gemini key
+bash setup-key.sh both    # Both keys
+```
+
+The script uses secure input (key never displayed), writes directly to the Claude Desktop config, and clears the key from memory. After running it, the user restarts Claude Desktop and the MCP server is ready.
+
+
 ## Step 2: Handle File Uploads
 
 If the user has dropped or mentioned a local file:
