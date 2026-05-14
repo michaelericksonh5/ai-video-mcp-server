@@ -7,7 +7,7 @@ Works with **fal.ai** API keys and **Google Gemini** API keys.
 ---
 
 ## What it can do
-h
+
 | Capability | fal.ai | Gemini |
 |---|---|---|
 | Text → Video (Veo 3.1) | ✅ | ✅ |
