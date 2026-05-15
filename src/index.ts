@@ -20,6 +20,7 @@ import { registerSetupTools } from "./tools/setupTools.js";
 import { registerUploadTools } from "./tools/uploadTools.js";
 import { registerVeoTools } from "./tools/veoTools.js";
 import { registerAlternativeTools } from "./tools/alternativeTools.js";
+import { registerFfmpegTools } from "./tools/ffmpegTools.js";
 
 const server = new McpServer({
   name: "ai-video-mcp-server",
@@ -31,6 +32,7 @@ registerSetupTools(server);
 registerUploadTools(server);
 registerVeoTools(server);
 registerAlternativeTools(server);
+registerFfmpegTools(server);
 
 // Start stdio transport
 const transport = new StdioServerTransport();

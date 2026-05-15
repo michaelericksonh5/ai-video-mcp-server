@@ -40,7 +40,7 @@ export interface VideoFormatOpts {
 let _ffmpegChecked = false;
 let _ffmpegBin: string | null = null;
 
-async function ensureFfmpegStatic(): Promise<string | null> {
+export async function ensureFfmpegStatic(): Promise<string | null> {
   if (_ffmpegChecked) return _ffmpegBin;
   _ffmpegChecked = true;
 
