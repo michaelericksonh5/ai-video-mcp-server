@@ -48,6 +48,8 @@ Returns: Animated video URL and metadata.`,
         duration: z.number().int().min(3).max(15).default(5).describe("Duration in seconds (3–15)"),
         seed: z.number().int().min(0).max(2147483647).optional().describe("Seed for reproducibility"),
         enable_safety_checker: z.boolean().default(true).describe("Enable content moderation"),
+        asset_name: z.string().optional().describe("Slot asset being animated (e.g. 'HP1', 'HP2', 'BG_base', 'WD1'). Sets the output filename."),
+        animation_type: z.enum(["idle", "win", "land", "ambient", "intro", "outro", "bonus", "jackpot", "general"]).optional().describe("Animation type for slot game use — idle, win, land, ambient, etc. Sets the filename suffix."),
       }),
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     },
@@ -56,7 +58,7 @@ Returns: Animated video URL and metadata.`,
         const { key } = resolveProvider("fal");
         configureFal(key);
         const result = await falHappyHorseImageToVideo(params);
-        return { content: [{ type: "text" as const, text: await formatResult(result, params.prompt) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result, { prompt: params.prompt, assetName: params.asset_name, animationType: params.animation_type }) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -105,6 +107,8 @@ Returns: Video URL and metadata.`,
         duration: z.number().int().min(3).max(15).default(5).describe("Duration in seconds (3–15)"),
         seed: z.number().int().min(0).max(2147483647).optional().describe("Seed for reproducibility"),
         enable_safety_checker: z.boolean().default(true).describe("Enable content moderation"),
+        asset_name: z.string().optional().describe("Slot asset being animated (e.g. 'HP1', 'HP2', 'BG_base', 'WD1'). Sets the output filename."),
+        animation_type: z.enum(["idle", "win", "land", "ambient", "intro", "outro", "bonus", "jackpot", "general"]).optional().describe("Animation type for slot game use — idle, win, land, ambient, etc. Sets the filename suffix."),
       }),
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     },
@@ -113,7 +117,7 @@ Returns: Video URL and metadata.`,
         const { key } = resolveProvider("fal");
         configureFal(key);
         const result = await falHappyHorseReferenceToVideo(params);
-        return { content: [{ type: "text" as const, text: await formatResult(result, params.prompt) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result, { prompt: params.prompt, assetName: params.asset_name, animationType: params.animation_type }) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -161,6 +165,8 @@ Returns: Video URL and metadata.`,
           .describe("Video aspect ratio"),
         generate_audio: z.boolean().default(true).describe("Generate synchronized audio"),
         seed: z.number().int().optional().describe("Seed for reproducibility"),
+        asset_name: z.string().optional().describe("Slot asset being animated (e.g. 'HP1', 'HP2', 'BG_base', 'WD1'). Sets the output filename."),
+        animation_type: z.enum(["idle", "win", "land", "ambient", "intro", "outro", "bonus", "jackpot", "general"]).optional().describe("Animation type for slot game use — idle, win, land, ambient, etc. Sets the filename suffix."),
       }),
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     },
@@ -169,7 +175,7 @@ Returns: Video URL and metadata.`,
         const { key } = resolveProvider("fal");
         configureFal(key);
         const result = await falSeedanceImageToVideo(params);
-        return { content: [{ type: "text" as const, text: await formatResult(result, params.prompt) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result, { prompt: params.prompt, assetName: params.asset_name, animationType: params.animation_type }) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -237,6 +243,8 @@ Returns: Video URL and metadata.`,
           .describe("Video aspect ratio"),
         generate_audio: z.boolean().default(true).describe("Generate synchronized audio"),
         seed: z.number().int().optional().describe("Seed for reproducibility"),
+        asset_name: z.string().optional().describe("Slot asset being animated (e.g. 'HP1', 'HP2', 'BG_base', 'WD1'). Sets the output filename."),
+        animation_type: z.enum(["idle", "win", "land", "ambient", "intro", "outro", "bonus", "jackpot", "general"]).optional().describe("Animation type for slot game use — idle, win, land, ambient, etc. Sets the filename suffix."),
       }),
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     },
@@ -245,7 +253,7 @@ Returns: Video URL and metadata.`,
         const { key } = resolveProvider("fal");
         configureFal(key);
         const result = await falSeedanceReferenceToVideo(params);
-        return { content: [{ type: "text" as const, text: await formatResult(result, params.prompt) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result, { prompt: params.prompt, assetName: params.asset_name, animationType: params.animation_type }) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }

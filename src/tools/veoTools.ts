@@ -64,6 +64,8 @@ Returns: Video URL, provider, model, and metadata.`,
         auto_fix: z.boolean().default(true).describe("Auto-fix policy-violating prompts (fal.ai only)"),
         safety_tolerance: safetySchema,
         provider: providerSchema,
+        asset_name: z.string().optional().describe("Slot asset being animated (e.g. 'HP1', 'HP2', 'BG_base', 'WD1'). Sets the output filename."),
+        animation_type: z.enum(["idle", "win", "land", "ambient", "intro", "outro", "bonus", "jackpot", "general"]).optional().describe("Animation type for slot game use — idle, win, land, ambient, etc. Sets the filename suffix."),
       }),
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     },
@@ -97,7 +99,7 @@ Returns: Video URL, provider, model, and metadata.`,
           });
         }
 
-        return { content: [{ type: "text" as const, text: await formatResult(result, params.prompt) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result, { prompt: params.prompt, assetName: params.asset_name, animationType: params.animation_type }) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -137,6 +139,8 @@ Returns: Video URL and metadata.`,
         auto_fix: z.boolean().default(true).describe("Auto-fix policy-violating prompts (fal.ai only)"),
         safety_tolerance: safetySchema,
         provider: providerSchema,
+        asset_name: z.string().optional().describe("Slot asset being animated (e.g. 'HP1', 'HP2', 'BG_base', 'WD1'). Sets the output filename."),
+        animation_type: z.enum(["idle", "win", "land", "ambient", "intro", "outro", "bonus", "jackpot", "general"]).optional().describe("Animation type for slot game use — idle, win, land, ambient, etc. Sets the filename suffix."),
       }),
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     },
@@ -172,7 +176,7 @@ Returns: Video URL and metadata.`,
           });
         }
 
-        return { content: [{ type: "text" as const, text: await formatResult(result, params.prompt) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result, { prompt: params.prompt, assetName: params.asset_name, animationType: params.animation_type }) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -213,6 +217,8 @@ Returns: Video URL and metadata.`,
         auto_fix: z.boolean().default(true).describe("Auto-fix policy-violating prompts (fal.ai only)"),
         safety_tolerance: safetySchema,
         provider: providerSchema,
+        asset_name: z.string().optional().describe("Slot asset being animated (e.g. 'HP1', 'HP2', 'BG_base', 'WD1'). Sets the output filename."),
+        animation_type: z.enum(["idle", "win", "land", "ambient", "intro", "outro", "bonus", "jackpot", "general"]).optional().describe("Animation type for slot game use — idle, win, land, ambient, etc. Sets the filename suffix."),
       }),
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     },
@@ -250,7 +256,7 @@ Returns: Video URL and metadata.`,
           });
         }
 
-        return { content: [{ type: "text" as const, text: await formatResult(result, params.prompt) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result, { prompt: params.prompt, assetName: params.asset_name, animationType: params.animation_type }) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -290,6 +296,8 @@ Returns: Video URL and metadata.`,
         auto_fix: z.boolean().default(true).describe("Auto-fix policy-violating prompts (fal.ai only)"),
         safety_tolerance: safetySchema,
         provider: providerSchema,
+        asset_name: z.string().optional().describe("Slot asset being animated (e.g. 'HP1', 'HP2', 'BG_base', 'WD1'). Sets the output filename."),
+        animation_type: z.enum(["idle", "win", "land", "ambient", "intro", "outro", "bonus", "jackpot", "general"]).optional().describe("Animation type for slot game use — idle, win, land, ambient, etc. Sets the filename suffix."),
       }),
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     },
@@ -321,7 +329,7 @@ Returns: Video URL and metadata.`,
           });
         }
 
-        return { content: [{ type: "text" as const, text: await formatResult(result, params.prompt) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result, { prompt: params.prompt, assetName: params.asset_name, animationType: params.animation_type }) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }
@@ -364,6 +372,8 @@ Returns: Extended video URL and metadata.`,
         auto_fix: z.boolean().optional().describe("Auto-fix policy-violating prompts (fal.ai only)"),
         safety_tolerance: safetySchema,
         provider: providerSchema,
+        asset_name: z.string().optional().describe("Slot asset being animated (e.g. 'HP1', 'HP2', 'BG_base', 'WD1'). Sets the output filename."),
+        animation_type: z.enum(["idle", "win", "land", "ambient", "intro", "outro", "bonus", "jackpot", "general"]).optional().describe("Animation type for slot game use — idle, win, land, ambient, etc. Sets the filename suffix."),
       }),
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     },
@@ -396,7 +406,7 @@ Returns: Extended video URL and metadata.`,
           });
         }
 
-        return { content: [{ type: "text" as const, text: await formatResult(result, params.prompt) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
+        return { content: [{ type: "text" as const, text: await formatResult(result, { prompt: params.prompt, assetName: params.asset_name, animationType: params.animation_type }) }], structuredContent: JSON.parse(JSON.stringify(result)) as Record<string, unknown> };
       } catch (e) {
         return { content: [{ type: "text" as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` }] };
       }

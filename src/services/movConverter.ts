@@ -1,14 +1,22 @@
 /**
  * MOV conversion helpers.
  * All 9 video generation tools route their result through formatResult() which
- * downloads the MP4 and rewraps it losslessly to a local .mov file via ffmpeg.
+ * downloads the MP4, rewraps it losslessly to a local .mov, and writes a
+ * .meta.json sidecar containing the full prompt and asset metadata.
+ *
+ * File naming priority:
+ *   1. asset_name + animation_type   → HP1_idle_1747234567890.mov
+ *   2. asset_name only               → HP1_1747234567890.mov
+ *   3. Slugified prompt              → Zeus_dragon_breathes_1747234567890.mov
+ *   4. Model name fallback           → fal_ai_veo_1747234567890.mov
  *
  * ffmpeg is sourced in priority order:
  *   1. Managed install at ~/.h5g-ai-video/node_modules/ffmpeg-static/ffmpeg[.exe]
  *   2. System ffmpeg (detected via `where` / `which`)
  *   3. Auto-installed to ~/.h5g-ai-video/ via `npm install ffmpeg-static` on first run
  *
- * No action required from the user — installation is transparent on first use.
+ * Sidecar format matches the slot-art plugin's h5g_asset.meta.v1 schema (adapted
+ * for video: schema = "h5g_video.meta.v1").
  */
 
 import * as fs from "node:fs";
@@ -17,6 +25,17 @@ import * as path from "node:path";
 import * as child_process from "node:child_process";
 import type { VideoGenerationResult } from "../types.js";
 import { getGeminiKey } from "./keyManager.js";
+
+// ─── Types ───────────────────────────────────────────────────────────────────
+
+export interface VideoFormatOpts {
+  prompt?: string;
+  assetName?: string;
+  animationType?: string;
+  sourceImageUrl?: string;
+}
+
+// ─── ffmpeg bootstrap ────────────────────────────────────────────────────────
 
 let _ffmpegChecked = false;
 let _ffmpegBin: string | null = null;
@@ -95,6 +114,49 @@ async function ensureFfmpegStatic(): Promise<string | null> {
   return _ffmpegBin;
 }
 
+// ─── Filename helpers ─────────────────────────────────────────────────────────
+
+function slugifyText(text: string | undefined): string | null {
+  if (!text) return null;
+  const slug = String(text)
+    .trim()
+    .slice(0, 50)
+    .replace(/[^a-z0-9]+/gi, "_")
+    .replace(/_+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 40);
+  return slug || null;
+}
+
+function buildFilename(opts: VideoFormatOpts | undefined, result: VideoGenerationResult): string {
+  const assetPart = slugifyText(opts?.assetName);
+  const typePart = slugifyText(opts?.animationType);
+  if (assetPart && typePart) return `${assetPart}_${typePart}`;
+  if (assetPart) return assetPart;
+  return slugifyText(opts?.prompt) ?? (result.model ?? "video").replace(/[^a-z0-9_-]/gi, "_").slice(0, 40);
+}
+
+// ─── Sidecar ─────────────────────────────────────────────────────────────────
+
+function writeSidecar(movPath: string, meta: Record<string, unknown>): void {
+  const sidecarPath = movPath.replace(/\.mov$/i, ".meta.json");
+  const payload = {
+    schema: "h5g_video.meta.v1",
+    filename: path.basename(movPath),
+    full_path: movPath,
+    generated_at: new Date().toISOString(),
+    ...meta,
+  };
+  try {
+    fs.writeFileSync(sidecarPath, JSON.stringify(payload, null, 2));
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    process.stderr.write(`[ai-video] failed to write sidecar ${sidecarPath}: ${msg}\n`);
+  }
+}
+
+// ─── Download ────────────────────────────────────────────────────────────────
+
 async function downloadVideo(url: string, destPath: string, provider: string): Promise<void> {
   const headers: Record<string, string> = {};
   let fetchUrl = url;
@@ -115,27 +177,21 @@ async function downloadVideo(url: string, destPath: string, provider: string): P
   fs.writeFileSync(destPath, Buffer.from(buffer));
 }
 
-function slugifyPrompt(prompt: string | undefined): string | null {
-  if (!prompt) return null;
-  const slug = prompt
-    .trim()
-    .slice(0, 50)
-    .replace(/[^a-z0-9]+/gi, "_")
-    .replace(/_+/g, "_")
-    .replace(/^_+|_+$/g, "")
-    .slice(0, 40);
-  return slug || null;
-}
+// ─── Rewrap ───────────────────────────────────────────────────────────────────
 
-async function rewrapToMov(result: VideoGenerationResult, prompt?: string): Promise<string | null> {
+async function rewrapToMov(
+  result: VideoGenerationResult,
+  opts?: VideoFormatOpts
+): Promise<string | null> {
   const ffmpegBin = await ensureFfmpegStatic();
   if (!ffmpegBin) return null;
 
   const outDir = path.join(os.homedir(), ".h5g-ai-video", "output");
   fs.mkdirSync(outDir, { recursive: true });
 
-  const slug = slugifyPrompt(prompt) ?? (result.model ?? "video").replace(/[^a-z0-9_-]/gi, "_").slice(0, 40);
+  const slug = buildFilename(opts, result);
   const ts = Date.now();
+  const t0 = Date.now();
   const mp4Path = path.join(outDir, `${slug}_${ts}_tmp.mp4`);
   const movPath = path.join(outDir, `${slug}_${ts}.mov`);
 
@@ -151,18 +207,34 @@ async function rewrapToMov(result: VideoGenerationResult, prompt?: string): Prom
       );
     });
 
+    writeSidecar(movPath, {
+      provider: result.provider === "fal" ? "fal.ai" : "Google Gemini",
+      model: result.model,
+      asset_name: opts?.assetName ?? null,
+      animation_type: opts?.animationType ?? null,
+      prompt: opts?.prompt ?? null,
+      source_image_url: opts?.sourceImageUrl ?? null,
+      request_id: result.request_id ?? null,
+      duration_seconds: (Date.now() - t0) / 1000,
+    });
+
     return movPath;
   } finally {
     try { fs.unlinkSync(mp4Path); } catch { /* ignore cleanup errors */ }
   }
 }
 
-export async function formatResult(result: VideoGenerationResult, prompt?: string): Promise<string> {
+// ─── Public API ───────────────────────────────────────────────────────────────
+
+export async function formatResult(
+  result: VideoGenerationResult,
+  opts?: VideoFormatOpts
+): Promise<string> {
   let movPath: string | null = null;
   let movNote = "";
 
   try {
-    movPath = await rewrapToMov(result, prompt);
+    movPath = await rewrapToMov(result, opts);
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     movNote = ` (MOV conversion failed: ${msg})`;
@@ -174,6 +246,11 @@ export async function formatResult(result: VideoGenerationResult, prompt?: strin
     `**Provider**: ${result.provider === "fal" ? "fal.ai" : "Google Gemini"}`,
     `**Model**: ${result.model}`,
   ];
+
+  if (opts?.assetName || opts?.animationType) {
+    const label = [opts?.assetName, opts?.animationType].filter(Boolean).join(" — ");
+    lines.push(`**Asset**: ${label}`);
+  }
 
   if (movPath) {
     lines.push(`**Saved to**: ${movPath}`);
